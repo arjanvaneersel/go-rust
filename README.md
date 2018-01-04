@@ -9,9 +9,13 @@ main.go contains the Go source code
 Easiest way is to use the Makefile
 
 **make library**    will compile the Rust library and copy the .so file to the lib directory
+
 **make build**      will build the Go binary
+
 **make all**        will perform all the above mentioned tasks
+
 **make run**        will execute the binary
+
 **make clean**      will clean the build files
 
 ## Explanation
