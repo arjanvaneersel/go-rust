@@ -12,3 +12,12 @@
 
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
+
+# Library target directory
+lib/target
+
+# Cargo lock file
+Cargo.lock
+
+# Project binary
+go-rust

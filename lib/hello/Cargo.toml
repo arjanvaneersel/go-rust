@@ -1,0 +1,9 @@
+[package]
+name = "hello"
+version = "0.0.1"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+libc = "0.2.2"
