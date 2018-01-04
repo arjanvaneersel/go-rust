@@ -3,6 +3,7 @@ Invoking a Rust library from Go via CGO
 
 ## Structure
 lib/hello/src contains the Rust source of the library
+
 main.go contains the Go source code
 
 ## Usage
