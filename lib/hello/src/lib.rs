@@ -1,11 +1,26 @@
 extern crate libc;
-use std::ffi::CStr;
+extern crate curve25519_dalek;
+extern crate rand;
+
+
+
+use libc::{uint8_t, size_t};
+use std::slice;
+use curve25519_dalek::ristretto::{RistrettoPoint};
+use rand::{OsRng};
 
 #[no_mangle]
-pub extern "C" fn hello(name: *const libc::c_char) {
-    let buf_name = unsafe { 
-        CStr::from_ptr(name).to_bytes() 
+pub extern "C" fn generate(buf: *mut uint8_t, len: size_t) {
+    let buffer = unsafe {
+        assert!(!buf.is_null());
+        slice::from_raw_parts_mut(buf, len as usize)
     };
-    let str_name = String::from_utf8(buf_name.to_vec()).unwrap();
-    println!("A big hello from Rust to {}!", str_name);
+    let mut rng = OsRng::new().unwrap();
+
+    let point = RistrettoPoint::random(&mut rng);
+
+    let point_bytes = point.compress().to_bytes();
+
+    buffer.copy_from_slice(&point_bytes);
+
 }

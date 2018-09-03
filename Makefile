@@ -8,7 +8,7 @@ library:
 	$(MAKE) -C lib/hello build
 
 build:
-	cp lib/hello/target/release/libhello.so ./lib
+	cp lib/hello/target/release/libhello.dylib ./lib
 	go build -ldflags="-r $(ROOT_DIR)lib" -o go-rust
 
 all: library build

@@ -6,4 +6,6 @@ version = "0.0.1"
 crate-type = ["cdylib"]
 
 [dependencies]
-libc = "0.2.2"
+libc = "0.2"
+curve25519-dalek = "0.19"
+rand = "0.5"
