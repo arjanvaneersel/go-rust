@@ -2,7 +2,7 @@ ROOT_DIR := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
 clean:
 	rm -rf ./lib/hello/target
-	rm ./lib/hello/Cargo.lock ./lib/libhello.so go-rust
+	rm ./lib/hello/Cargo.lock ./lib/libhello.dylib go-rust
 
 library:
 	$(MAKE) -C lib/hello build

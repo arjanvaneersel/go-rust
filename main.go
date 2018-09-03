@@ -1,12 +1,12 @@
 package main
 
 /*
-#cgo darwin CFLAGS: -I./lib
 #cgo darwin LDFLAGS: -L./lib -lhello
 #include "./lib/hello.h"
 */
+import "C"
+
 import (
-	"C"
 	"fmt"
 	"unsafe"
 )
