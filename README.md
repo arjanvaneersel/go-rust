@@ -1,5 +1,5 @@
-# go-rust
-Invoking a Rust library from Go via CGO
+# go_to_rust_ristretto
+Convinience functions for interacting with the Rust implementation of Ristretto with a bytestring interface
 
 ## Structure
 lib/hello/src contains the Rust source of the library
