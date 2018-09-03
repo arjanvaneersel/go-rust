@@ -2,7 +2,7 @@
 Convinience functions for interacting with the Rust implementation of Ristretto with a bytestring interface
 
 ## Structure
-lib/hello/src contains the Rust source of the library
+lib/hello_ristretto/src contains the Rust source of the library
 
 main.go contains the Go source code
 
@@ -24,8 +24,8 @@ Invoking the Rust library is done via CGO.
 
 ```
 /*
-#cgo LDFLAGS: -L./lib -lhello
-#include "./lib/hello.h"
+#cgo LDFLAGS: -L./lib -lhello_ristretto
+#include "./lib/hello_ristretto.h"
 */
 import "C"
 ```
