@@ -9,3 +9,5 @@ crate-type = ["cdylib"]
 libc = "0.2"
 curve25519-dalek = "0.19"
 rand = "0.5"
+bulletproofs={git="https://github.com/dalek-cryptography/bulletproofs",branch="main"}
+bincode = "1"
