@@ -90,5 +90,5 @@ fn c_buf_to_32_bytes_array(buf: *const uint8_t,len: size_t)->[u8;32]{
         assert!(!buf.is_null());
         slice::from_raw_parts(buf, len as usize)
     };
-    *array_ref![buffer,0,32]
+    array_ref![buffer,0,32].clone()
 }
