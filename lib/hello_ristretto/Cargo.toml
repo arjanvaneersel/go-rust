@@ -1,0 +1,14 @@
+[package]
+name = "hello_ristretto"
+version = "0.0.1"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+libc = "0.2"
+curve25519-dalek = "0.19"
+rand = "0.5"
+bulletproofs={git="https://github.com/dalek-cryptography/bulletproofs",branch="main"}
+bincode = "1"
+arrayref = "0.3"
