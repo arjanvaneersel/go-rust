@@ -37,12 +37,15 @@ pub extern "C" fn generate_ristretto_range_proof(
     blind_1_buf_len: size_t,
     proof_buf: *mut uint8_t,
     proof_buf_len: size_t,
+    value_comm_0_buf:*mut uint8_t,
+    value_comm_0_buf_len:*mut uint8_t,
+    value_comm_1_buf:*mut uint8_t,
+    value_comm_1_buf_len:*mut uint8_t,
 ) {
-    let n: usize = 1;
-    let m: usize = 1;
+
 
     // Both prover and verifier have access to the generators and the proof
-    let generators = Generators::new(PedersenGenerators::default(), n, m);
+    let generators = Generators::new(PedersenGenerators::default(), 2, 2);
 
     let values: Vec<u64> = vec![value_0 as u64, value_1 as u64];
 
@@ -53,6 +56,18 @@ pub extern "C" fn generate_ristretto_range_proof(
         assert!(!proof_buf.is_null());
         slice::from_raw_parts_mut(proof_buf, proof_buf_len as usize)
     };
+
+
+    let value_comm_0_buffer = unsafe {
+        assert!(!value_comm_0_buf.is_null());
+        slice::from_raw_parts_mut(value_comm_0_buf, value_comm_0_buf_len as usize)
+    };
+
+  let value_comm_1_buffer = unsafe {
+        assert!(!value_comm_1_buf.is_null());
+        slice::from_raw_parts_mut(value_comm_1_buf, value_comm_1_buf_len as usize)
+    };
+
 
     let mut rng = OsRng::new().unwrap();
     let mut transcript = Transcript::new(b"AggregatedRangeProofTest");
@@ -82,6 +97,9 @@ pub extern "C" fn generate_ristretto_range_proof(
         .zip(blindings.iter())
         .map(|(&v, &v_blinding)| pg.commit(Scalar::from(v), v_blinding))
         .collect();
+
+    value_comm_0_buffer.copy_from_slice(&value_commitments[0].compress().to_bytes());
+    value_comm_1_buffer.copy_from_slice(&value_commitments[1].compress().to_bytes());
 }
 
 
