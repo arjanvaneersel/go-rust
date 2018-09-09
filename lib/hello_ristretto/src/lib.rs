@@ -6,7 +6,7 @@ extern crate rand;
 #[macro_use]
 extern crate arrayref;
 
-use curve25519_dalek::{ristretto::RistrettoPoint, scalar::Scalar};
+use curve25519_dalek::{ristretto::RistrettoPoint,ristretto::CompressedRistretto, scalar::Scalar};
 use libc::{size_t, uint64_t, uint8_t};
 use rand::{OsRng, Rng};
 use std::slice;
@@ -72,7 +72,7 @@ pub extern "C" fn generate_ristretto_range_proof(
     let mut rng = OsRng::new().unwrap();
     let mut transcript = Transcript::new(b"AggregatedRangeProofTest");
 
-    let (min, max) = (0u64, ((1u128 << n) - 1) as u64);
+    let (min, max) = (0u64, ((1u128 << 2) - 1) as u64);
     let blindings: Vec<Scalar> = vec![Scalar::from_canonical_bytes(blind_0_buffer).unwrap(),Scalar::from_canonical_bytes(blind_1_buffer).unwrap()];
 
     let proof = RangeProof::prove_multiple(
@@ -81,7 +81,7 @@ pub extern "C" fn generate_ristretto_range_proof(
         &mut rng,
         &values,
         &blindings,
-        n,
+        2,
     ).unwrap();
 
     // 2. Serialize
@@ -102,6 +102,44 @@ pub extern "C" fn generate_ristretto_range_proof(
     value_comm_1_buffer.copy_from_slice(&value_commitments[1].compress().to_bytes());
 }
 
+pub extern "C" fn verify_ristretto_range_proof(
+    proof_buf: *mut uint8_t,
+    proof_buf_len: size_t,
+    value_comm_0_buf:*mut uint8_t,
+    value_comm_0_buf_len:size_t,
+    value_comm_1_buf:*mut uint8_t,
+    value_comm_1_buf_len:size_t,    
+)-> bool{
+
+
+    let generators = Generators::new(PedersenGenerators::default(), 2, 2);
+
+    let proof_buffer = unsafe {
+        assert!(!proof_buf.is_null());
+        slice::from_raw_parts(proof_buf, proof_buf_len as usize)
+    };
+
+    let value_comm_0 = CompressedRistretto(c_buf_to_32_bytes_array(value_comm_0_buf,value_comm_0_buf_len));
+
+    let value_comm_1 = CompressedRistretto(c_buf_to_32_bytes_array(value_comm_1_buf,value_comm_1_buf_len));
+
+    let proof: RangeProof = bincode::deserialize(proof_buffer).unwrap();
+
+    let value_commitments = vec![value_comm_0.decompress().unwrap(), value_comm_1.decompress().unwrap()];
+
+    // 4. Verify with the same customization label as above
+    let mut rng = OsRng::new().unwrap();
+    let mut transcript = Transcript::new(b"AggregatedRangeProofTest");
+
+    proof.verify(
+        &value_commitments,
+        &generators,
+        &mut transcript,
+        &mut rng,
+        2
+    ).is_ok()
+
+}
 
 fn c_buf_to_32_bytes_array(buf: *const uint8_t,len: size_t)->[u8;32]{
     let buffer = unsafe {
